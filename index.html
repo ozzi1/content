@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Papan Kerja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400;75..125,500;75..125,600;75..125,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1F3EE;
+    --paper-2:#E5E9E1;
+    --ink:#17231C;
+    --ink-soft:#5C6B61;
+    --line:#C9D1C6;
+
+    --job-content:#2B5BD7;
+    --job-office:#3F6B55;
+    --job-dekor:#A8306B;
+    --job-cust:#C06A00;
+    --job-lain:#6B6B6B;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-variation-settings:"wdth" 100;
+    line-height:1.45;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+  header{padding:44px 0 22px}
+  .masthead{
+    display:flex;flex-wrap:wrap;align-items:flex-end;
+    gap:14px 24px;justify-content:space-between;
+    border-bottom:2px solid var(--ink);padding-bottom:14px;
+  }
+  h1{
+    margin:0;font-size:clamp(34px,7vw,64px);font-weight:800;
+    font-variation-settings:"wdth" 88;letter-spacing:-.02em;line-height:.95;
+  }
+  .masthead p{margin:0;color:var(--ink-soft);font-size:15px;max-width:34ch}
+  .clock{font-size:14px;color:var(--ink-soft);white-space:nowrap}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px 0 8px}
+  .chip{
+    font:inherit;font-size:14px;font-weight:600;
+    border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);
+    padding:7px 14px;border-radius:999px;cursor:pointer;
+  }
+  .chip:hover{border-color:var(--ink);color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .chip .n{opacity:.6;margin-left:6px;font-weight:500}
+  .chip:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+  .search{
+    margin-left:auto;flex:1 1 200px;max-width:280px;
+    font:inherit;font-size:14px;padding:8px 12px;
+    border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);
+  }
+  .search::placeholder{color:#93A096}
+
+  .count{padding:6px 0 0;font-size:13px;color:var(--ink-soft)}
+
+  ul.board{list-style:none;margin:16px 0 0;padding:0}
+  li.item{border-top:1px solid var(--line)}
+  li.item:last-child{border-bottom:1px solid var(--line)}
+
+  .row{
+    display:grid;grid-template-columns:96px 1fr auto;
+    gap:4px 20px;align-items:baseline;
+    padding:20px 0 20px 16px;
+    border-left:5px solid var(--job);
+    text-decoration:none;color:inherit;
+  }
+  .tanggal{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .judul{
+    grid-column:2;margin:0;
+    font-size:clamp(19px,2.4vw,26px);font-weight:600;
+    font-variation-settings:"wdth" 92;letter-spacing:-.01em;line-height:1.15;
+  }
+  a.row:hover .judul{text-decoration:underline;text-underline-offset:3px}
+  .detail{grid-column:2;margin:6px 0 0;font-size:15px;color:var(--ink-soft);max-width:68ch}
+  .meta{grid-column:2;margin-top:8px;font-size:13px;color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:6px 16px}
+  .job{
+    grid-column:3;grid-row:1;justify-self:end;
+    font-size:12px;font-weight:700;letter-spacing:.04em;
+    color:var(--job);white-space:nowrap;
+  }
+  .status{
+    grid-column:3;grid-row:2;justify-self:end;
+    font-size:12px;font-weight:600;color:var(--ink-soft);
+    border:1px solid var(--line);border-radius:999px;padding:2px 9px;white-space:nowrap;
+  }
+  .status.selesai{color:#2F6B45;border-color:#9EC4AC}
+  .status.proses{color:#9A5B00;border-color:#E0BE84}
+
+  .note{
+    margin:28px 0;padding:22px;background:var(--paper-2);
+    border-left:5px solid var(--ink);
+  }
+  .note h2{margin:0 0 8px;font-size:19px;font-weight:600}
+  .note p{margin:0 0 8px;font-size:15px;max-width:62ch}
+  .note code{background:#fff;padding:2px 6px;font-size:13px;word-break:break-all}
+  .note ol{margin:8px 0 0 18px;padding:0;font-size:15px}
+  .note li{margin-bottom:6px}
+
+  footer{padding:34px 0 60px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line);margin-top:34px}
+
+  @media (max-width:640px){
+    .row{grid-template-columns:1fr;padding-left:14px;gap:0}
+    .judul,.detail,.meta{grid-column:1}
+    .job,.status{grid-column:1;grid-row:auto;justify-self:start}
+    .job{order:-1;margin-bottom:4px}
+    .status{margin-top:10px}
+    .tanggal{margin-bottom:2px}
+    .search{margin-left:0;max-width:none}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    li.item{animation:in .35s ease both}
+    @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="masthead">
+      <div>
+        <h1>Papan Kerja</h1>
+        <p>Daftar pekerjaan berjalan: konten, kantor, dekor, dan pesanan customer.</p>
+      </div>
+      <div class="clock" id="updated">Memuat data…</div>
+    </div>
+  </header>
+
+  <div class="controls" id="controls" hidden>
+    <button class="chip" data-job="semua" aria-pressed="true">Semua<span class="n"></span></button>
+    <button class="chip" data-job="content" aria-pressed="false">Content<span class="n"></span></button>
+    <button class="chip" data-job="office" aria-pressed="false">Office<span class="n"></span></button>
+    <button class="chip" data-job="dekor" aria-pressed="false">Dekor<span class="n"></span></button>
+    <button class="chip" data-job="cust" aria-pressed="false">Cust<span class="n"></span></button>
+    <input class="search" id="search" type="search" placeholder="Cari judul, PIC, detail…" aria-label="Cari pekerjaan">
+  </div>
+
+  <p class="count" id="count" hidden></p>
+
+  <main id="main"></main>
+
+  <footer>
+    Data diambil langsung dari Google Spreadsheet yang sudah di-publish. Ubah isi sheet, muat ulang halaman, tampilan ikut berubah.
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURASI
+   ------------------------------------------------------------
+   PUB_ID : kode panjang setelah /d/e/ pada URL "Publish to web".
+            Sudah diisi sesuai link kamu.
+   GID    : nomor tab. Sheet1 (tab pertama) = "0".
+            Kalau nanti pakai tab lain, ambil angka gid= dari URL-nya.
+
+   Syarat: spreadsheet harus dipublish lewat
+   File -> Share -> Publish to web -> Entire document -> Publish.
+   ============================================================ */
+const CONFIG = {
+  PUB_ID: "2PACX-1vTHGZpaDSie80Vgbg3t4dLQSABnsA9J5ALzcEjQODHIajl1YCbMM9o64bv8ULZJqEB6oLes9sRxvnAd",
+  GID:    "0"
+};
+
+const CSV_URL = () =>
+  `https://docs.google.com/spreadsheets/d/e/${CONFIG.PUB_ID}/pub` +
+  `?gid=${CONFIG.GID}&single=true&output=csv&t=${Date.now()}`;
+
+/* ---------- Ambil + parse CSV ---------- */
+async function ambilData(){
+  const res = await fetch(CSV_URL());
+  if(!res.ok) throw new Error("HTTP " + res.status + " — cek pengaturan Publish to web");
+  const csv = await res.text();
+  if(csv.trim().startsWith("<")) throw new Error("Sheet belum dipublish sebagai data");
+  return keObjek(parseCSV(csv));
+}
+
+/* parser CSV yang tahan koma & tanda kutip di dalam sel */
+function parseCSV(teks){
+  const baris = [];
+  let sel = "", brs = [], dalamKutip = false;
+  teks = teks.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  for(let i = 0; i < teks.length; i++){
+    const c = teks[i];
+    if(dalamKutip){
+      if(c === '"'){ if(teks[i+1] === '"'){ sel += '"'; i++; } else dalamKutip = false; }
+      else sel += c;
+    } else if(c === '"'){ dalamKutip = true; }
+    else if(c === ','){ brs.push(sel); sel = ""; }
+    else if(c === '\n'){ brs.push(sel); baris.push(brs); brs = []; sel = ""; }
+    else sel += c;
+  }
+  brs.push(sel);
+  if(brs.some(x => x !== "")) baris.push(brs);
+  return baris.filter(r => r.some(x => (x||"").trim() !== ""));
+}
+
+/* nama kolom apa pun -> kunci standar */
+const ALIAS = {
+  tanggal:["tanggal","date","tgl","waktu"],
+  job:    ["job","kategori","category","jenis","tipe","divisi","bagian"],
+  judul:  ["judul","title","headline","nama","pekerjaan","kegiatan","content","konten","item"],
+  detail: ["detail","deskripsi","description","keterangan","catatan","note","isi","ket"],
+  pic:    ["pic","petugas","penanggung jawab","penanggungjawab","oleh","by","crew","nama pic"],
+  status: ["status","progress","progres","keadaan"],
+  deadline:["deadline","due","target","batas","tenggat"],
+  link:   ["link","url","tautan","file","drive"]
+};
+
+let KOLOM_ASLI = [];
+
+function keObjek(baris){
+  if(!baris.length) return [];
+  const header = baris[0].map(h => (h||"").trim());
+  KOLOM_ASLI = header.slice();
+  const peta = header.map(h => {
+    const n = h.toLowerCase().trim();
+    for(const kunci in ALIAS) if(ALIAS[kunci].some(a => n === a || n.startsWith(a))) return kunci;
+    return null;
+  });
+
+  // kalau tidak ada kolom judul, pakai kolom teks pertama yang belum terpakai
+  if(!peta.includes("judul")){
+    const i = peta.findIndex(p => p === null);
+    if(i >= 0) peta[i] = "judul"; else peta[0] = "judul";
+  }
+
+  return baris.slice(1).map(r => {
+    const o = {};
+    peta.forEach((kunci, i) => { if(kunci) o[kunci] = (r[i] || "").trim(); });
+    if(!o.judul) o.judul = (r.find(x => (x||"").trim()) || "").trim();
+    return o;
+  }).filter(o => o.judul);
+}
+
+/* ---------- Render ---------- */
+const JOB = {
+  content:{label:"Content", warna:"var(--job-content)"},
+  office: {label:"Office",  warna:"var(--job-office)"},
+  dekor:  {label:"Dekor",   warna:"var(--job-dekor)"},
+  cust:   {label:"Cust",    warna:"var(--job-cust)"}
+};
+
+const kunciJob = teks => {
+  const t = (teks||"").toLowerCase();
+  if(t.includes("content") || t.includes("konten")) return "content";
+  if(t.includes("office")  || t.includes("kantor")) return "office";
+  if(t.includes("dekor")   || t.includes("decor"))  return "dekor";
+  if(t.includes("cust")    || t.includes("pesanan"))return "cust";
+  return "lain";
+};
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let SEMUA = [], filterJob = "semua", kataCari = "";
+
+function tampilkan(){
+  const main  = document.getElementById("main");
+  const hasil = SEMUA.filter(b => {
+    const cocokJob = filterJob === "semua" || kunciJob(b.job) === filterJob;
+    const teks = [b.judul,b.detail,b.pic,b.status,b.job].join(" ").toLowerCase();
+    return cocokJob && teks.includes(kataCari);
+  });
+
+  const count = document.getElementById("count");
+  count.hidden = false;
+  count.textContent = `${hasil.length} pekerjaan ditampilkan dari total ${SEMUA.length}`;
+
+  if(!hasil.length){
+    main.innerHTML = `<div class="note"><h2>Belum ada yang cocok</h2>
+      <p>Coba pilih filter lain atau kosongkan kotak pencarian.</p></div>`;
+    return;
+  }
+
+  main.innerHTML = `<ul class="board">` + hasil.map(b => {
+    const k = kunciJob(b.job);
+    const j = JOB[k] || {label: b.job || "Lain", warna:"var(--job-lain)"};
+    const st = (b.status||"").toLowerCase();
+    const kelasStatus = st.includes("selesai")||st.includes("done") ? "selesai"
+                      : st.includes("proses")||st.includes("jalan") ? "proses" : "";
+    const meta = [
+      b.pic ? "PIC " + esc(b.pic) : "",
+      b.deadline ? "Deadline " + esc(b.deadline) : ""
+    ].filter(Boolean).map(x => `<span>${x}</span>`).join("");
+
+    const isi = `
+      <span class="tanggal">${esc(b.tanggal || "")}</span>
+      <span class="job">${esc(j.label)}</span>
+      <h2 class="judul">${esc(b.judul)}</h2>
+      ${b.status ? `<span class="status ${kelasStatus}">${esc(b.status)}</span>` : ""}
+      ${b.detail ? `<p class="detail">${esc(b.detail)}</p>` : ""}
+      ${meta ? `<div class="meta">${meta}</div>` : ""}`;
+
+    const gaya = `--job:${j.warna}`;
+    return `<li class="item">` + (b.link && /^https?:/i.test(b.link)
+      ? `<a class="row" style="${gaya}" href="${esc(b.link)}" target="_blank" rel="noopener">${isi}</a>`
+      : `<div class="row" style="${gaya}">${isi}</div>`) + `</li>`;
+  }).join("") + `</ul>`;
+}
+
+function hitungChip(){
+  document.querySelectorAll(".chip").forEach(c => {
+    const key = c.dataset.job;
+    const n = key === "semua" ? SEMUA.length : SEMUA.filter(b => kunciJob(b.job) === key).length;
+    c.querySelector(".n").textContent = n;
+  });
+}
+
+document.getElementById("controls").addEventListener("click", e => {
+  const chip = e.target.closest(".chip");
+  if(!chip) return;
+  filterJob = chip.dataset.job;
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === chip));
+  tampilkan();
+});
+document.getElementById("search").addEventListener("input", e => {
+  kataCari = e.target.value.trim().toLowerCase();
+  tampilkan();
+});
+
+(async function mulai(){
+  const main = document.getElementById("main");
+  try{
+    SEMUA = await ambilData();
+    console.log("Kolom terbaca dari sheet:", KOLOM_ASLI);
+    document.getElementById("controls").hidden = false;
+    document.getElementById("updated").textContent =
+      "Diperbarui " + new Date().toLocaleString("id-ID",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+    hitungChip();
+    if(!SEMUA.length){
+      main.innerHTML = `<div class="note"><h2>Sheet terbaca, tapi masih kosong</h2>
+        <p>Kolom yang terdeteksi: <code>${esc(KOLOM_ASLI.join(" | ") || "tidak ada")}</code></p>
+        <p>Pastikan baris 1 berisi judul kolom, dan baris berikutnya berisi data.</p></div>`;
+      return;
+    }
+    tampilkan();
+  }catch(err){
+    document.getElementById("updated").textContent = "Data gagal dimuat";
+    main.innerHTML = `<div class="note"><h2>Data gagal dimuat</h2>
+      <p>Buka spreadsheet, lalu: <strong>File → Share → Publish to web → Entire document → Publish</strong>.</p>
+      <ol>
+        <li>Pastikan tab yang dipakai ikut terpublish.</li>
+        <li>Kalau tab bukan yang pertama, ganti <code>GID</code> di file ini dengan angka <code>gid=</code> milik tab itu.</li>
+      </ol>
+      <p>Pesan teknis: <code>${esc(err.message)}</code></p></div>`;
+  }
+})();
+</script>
+</body>
+</html>
