@@ -32,7 +32,11 @@
     font-variation-settings:"wdth" 100;
     line-height:1.45;
   }
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .wrap{
+    max-width:1040px;margin:0 auto;
+    padding:0 max(20px, env(safe-area-inset-left)) 0 max(20px, env(safe-area-inset-right));
+  }
+  .judul,.detail,.meta,.note{overflow-wrap:anywhere}
 
   header{padding:44px 0 22px}
   .masthead{
@@ -47,11 +51,15 @@
   .masthead p{margin:0;color:var(--ink-soft);font-size:15px;max-width:34ch}
   .clock{font-size:14px;color:var(--ink-soft);white-space:nowrap}
 
-  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px 0 8px}
+  .controls{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px 0 10px;
+    position:sticky;top:0;z-index:5;background:var(--paper);
+  }
   .chip{
     font:inherit;font-size:14px;font-weight:600;
     border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);
-    padding:7px 14px;border-radius:999px;cursor:pointer;
+    padding:9px 15px;border-radius:999px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
   }
   .chip:hover{border-color:var(--ink);color:var(--ink)}
   .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -112,14 +120,60 @@
 
   footer{padding:34px 0 60px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line);margin-top:34px}
 
+  /* ---------- kalender mini ---------- */
+  .kalender{
+    max-width:300px;margin:36px 0 0;
+    border:1.5px solid var(--line);border-radius:14px;
+    padding:16px 16px 12px;background:#fff;
+  }
+  .kal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .kal-head .judul-bulan{font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .kal-nav{display:flex;gap:4px}
+  .kal-nav button{
+    width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line);
+    background:transparent;color:var(--ink);font-size:15px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  }
+  .kal-nav button:hover{border-color:var(--ink)}
+  .kal-nav button.kal-hari-ini{
+    width:auto;padding:0 10px;font-size:12px;font-weight:600;color:var(--ink-soft);
+  }
+  .kal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+  .kal-dow{font-size:11px;font-weight:600;color:var(--ink-soft);padding:4px 0 8px}
+  .kal-hari{
+    position:relative;font-size:13px;padding:7px 0;border-radius:8px;color:var(--ink);
+  }
+  .kal-hari.luar{color:#B7C0B2}
+  .kal-hari.ini{background:var(--ink);color:var(--paper);font-weight:700}
+  .kal-hari.minggu:not(.ini){color:#A8306B}
+
   @media (max-width:640px){
-    .row{grid-template-columns:1fr;padding-left:14px;gap:0}
-    .judul,.detail,.meta{grid-column:1}
-    .job,.status{grid-column:1;grid-row:auto;justify-self:start}
-    .job{order:-1;margin-bottom:4px}
+    header{padding:28px 0 16px}
+    .masthead{align-items:flex-start;flex-direction:column;gap:10px}
+    .clock{font-size:13px}
+
+    /* filter di baris atas, kotak cari turun ke barisnya sendiri */
+    .controls{gap:8px;padding:12px 0 10px;box-shadow:0 1px 0 var(--line)}
+    .chip{flex:0 0 auto;font-size:15px;padding:10px 16px}
+    .search{
+      order:99;flex:1 0 100%;margin-left:0;max-width:none;
+      font-size:16px;padding:11px 13px;  /* 16px supaya iOS tidak zoom */
+    }
+
+    /* satu pekerjaan = satu blok yang mudah dibaca sambil jalan */
+    .row{
+      grid-template-columns:1fr;gap:0;
+      padding:16px 0 18px 14px;
+    }
+    .tanggal,.judul,.detail,.meta,.job,.status{grid-column:1;grid-row:auto;justify-self:start}
+    .job{order:-2;margin-bottom:6px}
+    .tanggal{order:-1;margin-bottom:6px}
+    .judul{font-size:20px;line-height:1.2}
+    .detail{font-size:14.5px;margin-top:5px}
+    .meta{margin-top:7px;gap:4px 12px}
     .status{margin-top:10px}
-    .tanggal{margin-bottom:2px}
-    .search{margin-left:0;max-width:none}
+    .note{padding:18px 16px}
   }
   @media (prefers-reduced-motion:no-preference){
     li.item{animation:in .35s ease both}
@@ -129,6 +183,18 @@
 </head>
 <body>
 <div class="wrap">
+
+  <div class="kalender" id="kalender" aria-label="Kalender">
+    <div class="kal-head">
+      <div class="kal-nav">
+        <button type="button" id="kal-prev" aria-label="Bulan sebelumnya">‹</button>
+        <button type="button" id="kal-next" aria-label="Bulan berikutnya">›</button>
+      </div>
+      <span class="judul-bulan" id="kal-judul-bulan"></span>
+      <button type="button" class="kal-nav kal-hari-ini" id="kal-hari-ini">Hari ini</button>
+    </div>
+    <div class="kal-grid" id="kal-grid"></div>
+  </div>
 
   <header>
     <div class="masthead">
@@ -358,7 +424,57 @@ document.getElementById("search").addEventListener("input", e => {
       </ol>
       <p>Pesan teknis: <code>${esc(err.message)}</code></p></div>`;
   }
+})();/* ---------- Kalender mini (tampilan tanggal saja, tidak terhubung ke data) ---------- */
+(function(){
+  const NAMA_BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  const NAMA_HARI  = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+
+  const hariIni = new Date();
+  let tampil = new Date(hariIni.getFullYear(), hariIni.getMonth(), 1);
+
+  const elJudul = document.getElementById("kal-judul-bulan");
+  const elGrid  = document.getElementById("kal-grid");
+
+  function render(){
+    const tahun = tampil.getFullYear(), bulan = tampil.getMonth();
+    elJudul.textContent = `${NAMA_BULAN[bulan]} ${tahun}`;
+
+    const mulaiMinggu = new Date(tahun, bulan, 1).getDay();     // 0 = Minggu
+    const jumlahHari  = new Date(tahun, bulan + 1, 0).getDate();
+    const jumlahBulanLalu = new Date(tahun, bulan, 0).getDate();
+
+    let html = NAMA_HARI.map(h => `<div class="kal-dow">${h}</div>`).join("");
+
+    for(let i = mulaiMinggu; i > 0; i--){
+      html += `<div class="kal-hari luar">${jumlahBulanLalu - i + 1}</div>`;
+    }
+    for(let d = 1; d <= jumlahHari; d++){
+      const isHariIni = d === hariIni.getDate() && bulan === hariIni.getMonth() && tahun === hariIni.getFullYear();
+      const isMinggu = new Date(tahun, bulan, d).getDay() === 0;
+      const kelas = ["kal-hari", isHariIni ? "ini" : "", isMinggu ? "minggu" : ""].filter(Boolean).join(" ");
+      html += `<div class="${kelas}">${d}</div>`;
+    }
+    const totalSel = mulaiMinggu + jumlahHari;
+    const sisa = (7 - (totalSel % 7)) % 7;
+    for(let d = 1; d <= sisa; d++){
+      html += `<div class="kal-hari luar">${d}</div>`;
+    }
+    elGrid.innerHTML = html;
+  }
+
+  document.getElementById("kal-prev").addEventListener("click", () => {
+    tampil = new Date(tampil.getFullYear(), tampil.getMonth() - 1, 1); render();
+  });
+  document.getElementById("kal-next").addEventListener("click", () => {
+    tampil = new Date(tampil.getFullYear(), tampil.getMonth() + 1, 1); render();
+  });
+  document.getElementById("kal-hari-ini").addEventListener("click", () => {
+    tampil = new Date(hariIni.getFullYear(), hariIni.getMonth(), 1); render();
+  });
+
+  render();
 })();
+
 </script>
 </body>
 </html>
