@@ -32,7 +32,11 @@
     font-variation-settings:"wdth" 100;
     line-height:1.45;
   }
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .wrap{
+    max-width:1040px;margin:0 auto;
+    padding:0 max(20px, env(safe-area-inset-left)) 0 max(20px, env(safe-area-inset-right));
+  }
+  .judul,.detail,.meta,.note{overflow-wrap:anywhere}
 
   header{padding:44px 0 22px}
   .masthead{
@@ -47,11 +51,15 @@
   .masthead p{margin:0;color:var(--ink-soft);font-size:15px;max-width:34ch}
   .clock{font-size:14px;color:var(--ink-soft);white-space:nowrap}
 
-  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px 0 8px}
+  .controls{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px 0 10px;
+    position:sticky;top:0;z-index:5;background:var(--paper);
+  }
   .chip{
     font:inherit;font-size:14px;font-weight:600;
     border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);
-    padding:7px 14px;border-radius:999px;cursor:pointer;
+    padding:9px 15px;border-radius:999px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
   }
   .chip:hover{border-color:var(--ink);color:var(--ink)}
   .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -113,13 +121,31 @@
   footer{padding:34px 0 60px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line);margin-top:34px}
 
   @media (max-width:640px){
-    .row{grid-template-columns:1fr;padding-left:14px;gap:0}
-    .judul,.detail,.meta{grid-column:1}
-    .job,.status{grid-column:1;grid-row:auto;justify-self:start}
-    .job{order:-1;margin-bottom:4px}
+    header{padding:28px 0 16px}
+    .masthead{align-items:flex-start;flex-direction:column;gap:10px}
+    .clock{font-size:13px}
+
+    /* filter di baris atas, kotak cari turun ke barisnya sendiri */
+    .controls{gap:8px;padding:12px 0 10px;box-shadow:0 1px 0 var(--line)}
+    .chip{flex:0 0 auto;font-size:15px;padding:10px 16px}
+    .search{
+      order:99;flex:1 0 100%;margin-left:0;max-width:none;
+      font-size:16px;padding:11px 13px;  /* 16px supaya iOS tidak zoom */
+    }
+
+    /* satu pekerjaan = satu blok yang mudah dibaca sambil jalan */
+    .row{
+      grid-template-columns:1fr;gap:0;
+      padding:16px 0 18px 14px;
+    }
+    .tanggal,.judul,.detail,.meta,.job,.status{grid-column:1;grid-row:auto;justify-self:start}
+    .job{order:-2;margin-bottom:6px}
+    .tanggal{order:-1;margin-bottom:6px}
+    .judul{font-size:20px;line-height:1.2}
+    .detail{font-size:14.5px;margin-top:5px}
+    .meta{margin-top:7px;gap:4px 12px}
     .status{margin-top:10px}
-    .tanggal{margin-bottom:2px}
-    .search{margin-left:0;max-width:none}
+    .note{padding:18px 16px}
   }
   @media (prefers-reduced-motion:no-preference){
     li.item{animation:in .35s ease both}
