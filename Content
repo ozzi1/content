@@ -73,6 +73,24 @@
   }
   .search::placeholder{color:#93A096}
 
+  .sakelar{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:600;color:var(--ink-soft);
+    cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .sakelar input{position:absolute;opacity:0;width:1px;height:1px}
+  .sakelar .trek{
+    width:36px;height:21px;border-radius:999px;border:1.5px solid var(--line);
+    background:#fff;position:relative;transition:background .15s,border-color .15s;flex:0 0 auto;
+  }
+  .sakelar .trek::after{
+    content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+    background:var(--ink-soft);transition:transform .15s;
+  }
+  .sakelar input:checked + .trek{background:var(--ink);border-color:var(--ink)}
+  .sakelar input:checked + .trek::after{transform:translateX(15px);background:var(--paper)}
+  .sakelar input:focus-visible + .trek{outline:2px solid var(--ink);outline-offset:2px}
+
   .count{padding:6px 0 0;font-size:13px;color:var(--ink-soft)}
 
   ul.board{list-style:none;margin:16px 0 0;padding:0}
@@ -213,6 +231,11 @@
     <button class="chip" data-job="dekor" aria-pressed="false">Dekor<span class="n"></span></button>
     <button class="chip" data-job="cust" aria-pressed="false">Cust<span class="n"></span></button>
     <input class="search" id="search" type="search" placeholder="Cari judul, PIC, detail…" aria-label="Cari pekerjaan">
+    <label class="sakelar">
+      <input type="checkbox" id="sembunyikan-selesai">
+      <span class="trek"></span>
+      Sembunyikan yang selesai
+    </label>
   </div>
 
   <p class="count" id="count" hidden></p>
@@ -332,14 +355,17 @@ const kunciJob = teks => {
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-let SEMUA = [], filterJob = "semua", kataCari = "";
+let SEMUA = [], filterJob = "semua", kataCari = "", sembunyikanSelesai = false;
+
+const statusSelesai = b => (b.status || "").toLowerCase().includes("selesai") || (b.status || "").toLowerCase().includes("done");
 
 function tampilkan(){
   const main  = document.getElementById("main");
   const hasil = SEMUA.filter(b => {
     const cocokJob = filterJob === "semua" || kunciJob(b.job) === filterJob;
     const teks = [b.judul,b.detail,b.pic,b.status,b.job].join(" ").toLowerCase();
-    return cocokJob && teks.includes(kataCari);
+    const lolosStatus = filterJob !== "semua" || !sembunyikanSelesai || !statusSelesai(b);
+    return cocokJob && teks.includes(kataCari) && lolosStatus;
   });
 
   const count = document.getElementById("count");
@@ -379,9 +405,10 @@ function tampilkan(){
 }
 
 function hitungChip(){
+  const dasarSemua = sembunyikanSelesai ? SEMUA.filter(b => !statusSelesai(b)) : SEMUA;
   document.querySelectorAll(".chip").forEach(c => {
     const key = c.dataset.job;
-    const n = key === "semua" ? SEMUA.length : SEMUA.filter(b => kunciJob(b.job) === key).length;
+    const n = key === "semua" ? dasarSemua.length : SEMUA.filter(b => kunciJob(b.job) === key).length;
     c.querySelector(".n").textContent = n;
   });
 }
@@ -395,6 +422,11 @@ document.getElementById("controls").addEventListener("click", e => {
 });
 document.getElementById("search").addEventListener("input", e => {
   kataCari = e.target.value.trim().toLowerCase();
+  tampilkan();
+});
+document.getElementById("sembunyikan-selesai").addEventListener("change", e => {
+  sembunyikanSelesai = e.target.checked;
+  hitungChip();
   tampilkan();
 });
 
