@@ -120,6 +120,34 @@
 
   footer{padding:34px 0 60px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line);margin-top:34px}
 
+  /* ---------- kalender mini ---------- */
+  .kalender{
+    max-width:300px;margin:36px 0 0;
+    border:1.5px solid var(--line);border-radius:14px;
+    padding:16px 16px 12px;background:#fff;
+  }
+  .kal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .kal-head .judul-bulan{font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .kal-nav{display:flex;gap:4px}
+  .kal-nav button{
+    width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line);
+    background:transparent;color:var(--ink);font-size:15px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  }
+  .kal-nav button:hover{border-color:var(--ink)}
+  .kal-nav button.kal-hari-ini{
+    width:auto;padding:0 10px;font-size:12px;font-weight:600;color:var(--ink-soft);
+  }
+  .kal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+  .kal-dow{font-size:11px;font-weight:600;color:var(--ink-soft);padding:4px 0 8px}
+  .kal-hari{
+    position:relative;font-size:13px;padding:7px 0;border-radius:8px;color:var(--ink);
+  }
+  .kal-hari.luar{color:#B7C0B2}
+  .kal-hari.ini{background:var(--ink);color:var(--paper);font-weight:700}
+  .kal-hari.minggu:not(.ini){color:#A8306B}
+
   @media (max-width:640px){
     header{padding:28px 0 16px}
     .masthead{align-items:flex-start;flex-direction:column;gap:10px}
@@ -155,6 +183,18 @@
 </head>
 <body>
 <div class="wrap">
+
+  <div class="kalender" id="kalender" aria-label="Kalender">
+    <div class="kal-head">
+      <div class="kal-nav">
+        <button type="button" id="kal-prev" aria-label="Bulan sebelumnya">‹</button>
+        <button type="button" id="kal-next" aria-label="Bulan berikutnya">›</button>
+      </div>
+      <span class="judul-bulan" id="kal-judul-bulan"></span>
+      <button type="button" class="kal-nav kal-hari-ini" id="kal-hari-ini">Hari ini</button>
+    </div>
+    <div class="kal-grid" id="kal-grid"></div>
+  </div>
 
   <header>
     <div class="masthead">
@@ -384,7 +424,57 @@ document.getElementById("search").addEventListener("input", e => {
       </ol>
       <p>Pesan teknis: <code>${esc(err.message)}</code></p></div>`;
   }
+})();/* ---------- Kalender mini (tampilan tanggal saja, tidak terhubung ke data) ---------- */
+(function(){
+  const NAMA_BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  const NAMA_HARI  = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+
+  const hariIni = new Date();
+  let tampil = new Date(hariIni.getFullYear(), hariIni.getMonth(), 1);
+
+  const elJudul = document.getElementById("kal-judul-bulan");
+  const elGrid  = document.getElementById("kal-grid");
+
+  function render(){
+    const tahun = tampil.getFullYear(), bulan = tampil.getMonth();
+    elJudul.textContent = `${NAMA_BULAN[bulan]} ${tahun}`;
+
+    const mulaiMinggu = new Date(tahun, bulan, 1).getDay();     // 0 = Minggu
+    const jumlahHari  = new Date(tahun, bulan + 1, 0).getDate();
+    const jumlahBulanLalu = new Date(tahun, bulan, 0).getDate();
+
+    let html = NAMA_HARI.map(h => `<div class="kal-dow">${h}</div>`).join("");
+
+    for(let i = mulaiMinggu; i > 0; i--){
+      html += `<div class="kal-hari luar">${jumlahBulanLalu - i + 1}</div>`;
+    }
+    for(let d = 1; d <= jumlahHari; d++){
+      const isHariIni = d === hariIni.getDate() && bulan === hariIni.getMonth() && tahun === hariIni.getFullYear();
+      const isMinggu = new Date(tahun, bulan, d).getDay() === 0;
+      const kelas = ["kal-hari", isHariIni ? "ini" : "", isMinggu ? "minggu" : ""].filter(Boolean).join(" ");
+      html += `<div class="${kelas}">${d}</div>`;
+    }
+    const totalSel = mulaiMinggu + jumlahHari;
+    const sisa = (7 - (totalSel % 7)) % 7;
+    for(let d = 1; d <= sisa; d++){
+      html += `<div class="kal-hari luar">${d}</div>`;
+    }
+    elGrid.innerHTML = html;
+  }
+
+  document.getElementById("kal-prev").addEventListener("click", () => {
+    tampil = new Date(tampil.getFullYear(), tampil.getMonth() - 1, 1); render();
+  });
+  document.getElementById("kal-next").addEventListener("click", () => {
+    tampil = new Date(tampil.getFullYear(), tampil.getMonth() + 1, 1); render();
+  });
+  document.getElementById("kal-hari-ini").addEventListener("click", () => {
+    tampil = new Date(hariIni.getFullYear(), hariIni.getMonth(), 1); render();
+  });
+
+  render();
 })();
+
 </script>
 </body>
 </html>
