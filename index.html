@@ -32,3 +32,479 @@ p{line-height:1.7;font-weight:300;font-size:.98rem}
 .cover{position:fixed;inset:0;z-index:100;display:flex;justify-content:center}
 .cover .inner{width:100%;max-width:430px;position:relative;height:100dvh;overflow:hidden}
 .door{position:absolute;top:0;bottom:0;width:50.5%;background:var(--teal);transition:transform 1.4s cubic-bezier(.77,0,.18,1);z-index:1}
+.door.l{left:0;border-right:1px solid var(--brass)}
+.door.r{right:0;border-left:1px solid var(--brass)}
+.cover-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--mist);padding:0 30px;transition:opacity .6s ease, transform .8s ease}
+.cover-content .to{font-family:var(--serif);font-size:1.7rem;color:var(--brass);margin:6px 0 34px}
+.cover-content h1{font-size:3.2rem;margin:14px 0 40px}
+.btn{font-family:var(--sans);background:transparent;color:var(--mist);border:1px solid var(--brass);padding:13px 30px;border-radius:40px;font-size:.92rem;letter-spacing:.06em;cursor:pointer;transition:background .3s,color .3s}
+.btn:hover:not(:disabled),.btn:focus-visible{background:var(--brass);color:var(--ink);outline:none}
+.btn:disabled{opacity:.55;cursor:wait}
+.btn.fill{background:var(--brass);color:var(--ink);border:none;margin-top:6px}
+.cover.open .door.l{transform:translateX(-101%)}
+.cover.open .door.r{transform:translateX(101%)}
+.cover.open .cover-content{opacity:0;transform:scale(1.15);pointer-events:none}
+.cover.gone{display:none}
+#coverMsg{min-height:1.4em;font-size:.85rem;margin-bottom:14px;color:var(--dust)}
+
+.close-btn{position:fixed;top:14px;left:calc(50% - 215px + 14px);z-index:60;font-size:.75rem;background:rgba(18,48,58,.75);color:var(--mist);border:1px solid var(--brass);border-radius:30px;padding:7px 14px;cursor:pointer;backdrop-filter:blur(6px)}
+.music{position:fixed;bottom:18px;right:calc(50% - 215px + 16px);z-index:60;width:44px;height:44px;border-radius:50%;border:1px solid var(--brass);background:rgba(18,48,58,.8);color:var(--brass);font-size:1.1rem;cursor:pointer;backdrop-filter:blur(6px)}
+@media (max-width:430px){.close-btn{left:14px}.music{right:16px}}
+.music.playing{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===================== HERO & FOTO ===================== */
+.hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;color:var(--mist);padding-bottom:80px;overflow:hidden}
+.hero .bg{position:absolute;inset:0;z-index:0}
+.hero .bg img{width:100%;height:100%;object-fit:cover;transform-origin:center;will-change:transform}
+.hero .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,26,32,.92) 5%,rgba(10,26,32,.1) 65%)}
+.hero > *:not(.bg){position:relative;z-index:1}
+.hero h1{font-size:3.6rem;margin:10px 0}
+.amp{font-style:italic;color:var(--brass)}
+
+.frame{position:relative;overflow:hidden;border-radius:200px 200px 12px 12px;margin:0 auto 22px;width:78%;aspect-ratio:3/4;background:#2c5560}
+.frame.square{border-radius:12px;width:100%;aspect-ratio:4/5;margin:0}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;will-change:transform}
+
+/* ===================== ANIMASI SCROLL ===================== */
+[data-anim]{opacity:0;transition:opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+[data-anim="fade-up"]{transform:translateY(40px)}
+[data-anim="slide-left"]{transform:translateX(-60px)}
+[data-anim="slide-right"]{transform:translateX(60px)}
+[data-anim="zoom-in"]{transform:scale(.7)}
+[data-anim="zoom-out"]{transform:scale(1.35)}
+[data-anim].show{opacity:1;transform:none}
+
+/* ===================== KONTEN ===================== */
+.dark{background:var(--teal);color:var(--mist)}
+.dark h2{color:var(--brass)}
+.names{font-size:1.9rem;color:var(--teal);margin:6px 0 4px}
+.parents{font-size:.88rem;opacity:.8}
+.divider{width:1px;height:50px;background:var(--brass);margin:26px auto}
+
+.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px}
+.countdown div{border:1px solid rgba(181,138,74,.6);border-radius:10px;padding:14px 4px}
+.countdown b{display:block;font-family:var(--serif);font-size:2rem;font-weight:400;color:var(--brass)}
+.countdown span{font-size:.72rem;opacity:.85}
+
+.card{border:1px solid rgba(181,138,74,.7);border-radius:14px;padding:26px 20px;margin-top:22px;background:rgba(255,255,255,.4)}
+.card h3{font-size:1.6rem;color:var(--teal);margin-bottom:8px}
+.link{display:inline-block;margin-top:16px;text-decoration:none;font-size:.85rem;border:1px solid var(--teal);color:var(--teal);padding:10px 22px;border-radius:30px;cursor:pointer;background:transparent;font-family:var(--sans)}
+.link:hover{background:var(--teal);color:var(--mist)}
+
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.gallery .frame.wide{grid-column:span 2;aspect-ratio:16/10}
+
+form{display:flex;flex-direction:column;gap:12px;margin-top:20px;text-align:left}
+input,select,textarea{font-family:var(--sans);font-size:.95rem;padding:13px 14px;border-radius:10px;border:1px solid rgba(181,138,74,.7);background:rgba(255,255,255,.08);color:inherit;width:100%}
+input::placeholder,textarea::placeholder{color:rgba(233,239,240,.55)}
+select option{color:#000}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.status{min-height:1.4em;font-size:.88rem;text-align:center;margin-top:10px}
+.status.err{color:var(--dust)}
+
+
+footer{padding:40px 24px 90px;text-align:center;font-size:.8rem;opacity:.85}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms!important;animation:none!important}
+  [data-anim]{opacity:1;transform:none}
+}
+</style>
+</head>
+
+<body class="locked">
+
+<!-- ===================== COVER ===================== -->
+<div class="cover" id="cover">
+  <div class="inner">
+    <div class="door l"></div>
+    <div class="door r"></div>
+    <div class="cover-content">
+      <p class="small">THE WEDDING OF</p>
+      <h1 id="coverNames">&nbsp;</h1>
+      <p class="small">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+      <p class="to" id="guestName">Tamu Undangan</p>
+      <p id="coverMsg" role="status"></p>
+      <button class="btn" id="openBtn" disabled>Memuat…</button>
+    </div>
+  </div>
+</div>
+
+<button class="close-btn" id="closeBtn" hidden>Tutup undangan</button>
+<button class="music" id="musicBtn" hidden aria-label="Putar atau jeda musik">♪</button>
+<audio id="bgm" loop preload="none"></audio>
+
+<main class="phone" id="app"></main>
+
+<script>
+/* ============================================================
+ *  PENGATURAN
+ *  SHEET_ID : ID Google Sheet "Main data" (bagian antara /d/ dan /edit pada linknya).
+ *             Sheet harus dibagikan sebagai "Anyone with the link" -> Viewer.
+ *             Jika dikosongkan, halaman memakai DATA CONTOH (mode pratinjau).
+ *  FORM_URL + ENTRY : tujuan konfirmasi kehadiran (Google Form). Kosong = formulir disembunyikan.
+ * ============================================================ */
+const CFG = {
+  SHEET_ID: '1mlQuMGj7E0pxA05UiB6kdYu6JpViPhZTZVmtA_xDQ4E',
+  FORM_URL: '',   // contoh: 'https://docs.google.com/forms/d/e/1FAIpQLS.../formResponse'
+  ENTRY: { nama: '', alamat: '', kehadiran: '' }   // contoh: 'entry.123456789'
+};
+
+/* Data contoh untuk pratinjau tanpa Google Sheet */
+const DEMO = {
+  main: {
+    nama_pria:'Raka Pratama', bapak_pria:'Hadi', ibu_pria:'Wati',
+    nama_wanita:'Sinta Ayu Lestari', bapak_wanita:'Agus', ibu_wanita:'Rina',
+    alamat:'Gedung Serbaguna Kartika, Jl. Merdeka No. 10, Malang',
+    link_alamat:'https://maps.google.com/?q=Malang',
+    tanggal:'12 Desember 2026', jam:'09.00 WIB'
+  },
+  // no 1 = sampul, 2 = pria, 3 = wanita, 4 dst = galeri (link kosong = gambar pengganti)
+  foto:[{no:4,link:'demo-1'},{no:5,link:'demo-2'},{no:6,link:'demo-3'}]
+};
+
+/* ===================== ALAT BANTU ===================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Ambil ID file dari berbagai bentuk link Google Drive
+const driveId = u => { const m = String(u || '').match(/(?:\/d\/|[?&]id=)([\w-]{20,})/); return m ? m[1] : null; };
+const imgUrl = u => { if (!u) return ''; const id = driveId(u); return id ? `https://lh3.googleusercontent.com/d/${id}=w1200` : u; };
+const audioUrl = u => { const id = driveId(u); return id ? `https://drive.google.com/uc?export=download&id=${id}` : (u || ''); };
+
+const PH = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2c5560"/><stop offset="1" stop-color="#b58a4a"/></linearGradient></defs><rect width="600" height="800" fill="url(#g)"/></svg>');
+
+function photo(url, alt, scrub, lazy = true, cls = '') {
+  const id = driveId(url) || '';
+  const src = url ? imgUrl(url) : PH;
+  return `<img${cls ? ` class="${cls}"` : ''} src="${esc(src)}" data-id="${esc(id)}" alt="${esc(alt)}" referrerpolicy="no-referrer"` +
+         `${scrub ? ` data-scrub="${scrub}"` : ''}${lazy ? ' loading="lazy"' : ''}>`;
+}
+
+// Foto gagal dimuat: coba alamat cadangan Drive, lalu gambar pengganti
+document.addEventListener('error', e => {
+  const img = e.target;
+  if (img.tagName !== 'IMG' || img.dataset.ph) return;
+  if (img.dataset.id && !img.dataset.retry) {
+    img.dataset.retry = '1';
+    img.src = `https://drive.google.com/thumbnail?id=${img.dataset.id}&sz=w1200`;
+  } else { img.dataset.ph = '1'; img.src = PH; }
+}, true);
+
+/* ===== TANGGAL ===== */
+const BULAN = ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'];
+const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+// Menerima "19 Mei 2026" atau "2026-05-19". Jam (opsional) "09.00" atau "09:00", dianggap WIB (+07:00).
+function parseTanggal(s, jam) {
+  s = String(s || '').trim();
+  if (!s) return null;
+  let y, mo, d, m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) { y = +m[1]; mo = +m[2] - 1; d = +m[3]; }
+  else {
+    m = s.match(/(\d{1,2})\s+([A-Za-z]+)\.?\s+(\d{4})/);
+    if (!m) return null;
+    const nm = m[2].toLowerCase();
+    mo = BULAN.indexOf(nm);
+    if (mo < 0) mo = BULAN.findIndex(b => b.startsWith(nm.slice(0, 3)));
+    if (mo < 0) return null;
+    d = +m[1]; y = +m[3];
+  }
+  const t = String(jam || '').match(/(\d{1,2})[.:](\d{2})/);
+  const hh = t ? +t[1] : 0, mm = t ? +t[2] : 0;
+  const hari = HARI[new Date(Date.UTC(y, mo, d)).getUTCDay()];
+  return {
+    date: new Date(Date.UTC(y, mo, d, hh - 7, mm)),
+    label: `${hari}, ${d} ${cap(BULAN[mo])} ${y}`
+  };
+}
+// Huruf awal tiap kata dibuat kapital: "agis salwa" -> "Agis Salwa"
+const title = s => String(s || '').trim().replace(/(^|[\s'-])(\p{L})/gu, (_, a, b) => a + b.toUpperCase());
+/* ===== /TANGGAL ===== */
+
+/* Kirim konfirmasi ke Google Form (tanpa server / Apps Script) */
+async function api(payload) {
+  if (payload.website) return { ok: true };                 // kolom jebakan bot terisi
+  if (!CFG.SHEET_ID) { await new Promise(r => setTimeout(r, 600)); return { ok: true }; }   // pratinjau
+  if (!CFG.FORM_URL) throw new Error('FORM_URL belum diisi');
+  const body = new URLSearchParams();
+  body.set(CFG.ENTRY.nama, payload.nama);
+  body.set(CFG.ENTRY.alamat, payload.alamat);
+  body.set(CFG.ENTRY.kehadiran, payload.kehadiran);
+  // no-cors: respons Google Form tidak bisa dibaca, jadi dianggap berhasil bila tidak ada error jaringan
+  await fetch(CFG.FORM_URL, { method: 'POST', mode: 'no-cors', body });
+  return { ok: true };
+}
+
+/* ===================== BACA GOOGLE SHEET LANGSUNG ===================== */
+// Memakai endpoint "gviz" milik Google lewat tag <script> (tidak kena batasan CORS).
+function loadSheet(id) {
+  return new Promise((resolve, reject) => {
+    const cb = 'gviz_' + Math.random().toString(36).slice(2);
+    const s = document.createElement('script');
+    let timer;
+    const done = () => { clearTimeout(timer); delete window[cb]; s.remove(); };
+    timer = setTimeout(() => {
+      done();
+      reject(new Error('Sheet tidak merespons. Pastikan dibagikan sebagai "Anyone with the link" (Viewer).'));
+    }, 12000);
+    window[cb] = res => {
+      done();
+      if (res && res.status === 'ok') resolve(res.table);
+      else reject(new Error('Google menolak permintaan: ' + JSON.stringify(res && res.errors)));
+    };
+    s.onerror = () => { done(); reject(new Error('Gagal memuat Sheet (koneksi).')); };
+    s.src = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json;responseHandler:${cb}&headers=0`;
+    document.head.appendChild(s);
+  });
+}
+
+const tableToRows = t => (t.rows || []).map(r => (r.c || []).map(c => c ? (c.f != null ? c.f : (c.v != null ? c.v : '')) : ''));
+
+/* Layout "Main data":
+ *   sebelum baris "Foto": kolom A = nama isian, kolom B = nilai ("Nama Pria" -> nama_pria)
+ *   setelah baris "Foto" (dan baris judul no | link): kolom B = link foto,
+ *   nomor foto diambil dari kolom A, atau dari urutan barisnya bila kosong. */
+function parseMain(rows) {
+  const main = {}, foto = [];
+  let inFoto = false, urut = 0;
+  rows.forEach(r => {
+    const a = String(r[0] ?? '').trim(), b = String(r[1] ?? '').trim();
+    const key = a.toLowerCase().replace(/\s+/g, ' ');
+    if (!inFoto) {
+      if (key === 'foto') { inFoto = true; return; }
+      if (key && b) main[key.replace(/ /g, '_')] = b;
+    } else {
+      if (key === 'no') return;                 // baris judul
+      urut++;
+      if (b) foto.push({ no: Number(a) > 0 ? Number(a) : urut, link: b });
+    }
+  });
+  foto.sort((x, y) => x.no - y.no);
+  return { main, foto };
+}
+
+/* ===================== RENDER HALAMAN ===================== */
+
+function render(data, to) {
+  const m = data.main || {};
+  const fotos = data.foto || [];
+  const foto = n => (fotos.find(f => f.no === n) || {}).link || '';   // 1 sampul, 2 pria, 3 wanita
+  const galeriFoto = fotos.filter(f => f.no >= 4 && f.link);            // 4 dst = galeri
+
+  const namaPria = title(m.nama_pria), namaWanita = title(m.nama_wanita);
+  const pgPria = title(m.panggilan_pria) || namaPria.split(' ')[0] || '';
+  const pgWanita = title(m.panggilan_wanita) || namaWanita.split(' ')[0] || '';
+  const ortu = (bapak, ibu, jenis) => {
+    const p = [];
+    if (bapak) p.push('Bapak ' + title(bapak));
+    if (ibu) p.push('Ibu ' + title(ibu));
+    return p.length ? `${jenis} dari ${p.join(' & ')}` : '';
+  };
+
+  const tgl = parseTanggal(m.tanggal, m.jam);
+  const tanggalTampil = tgl ? tgl.label : (m.tanggal || '');
+  const showCountdown = !!(tgl && tgl.date > new Date());   // disembunyikan jika tanggal sudah lewat
+  const pembuka = m.teks_pembuka || 'Dengan memohon rahmat Tuhan Yang Maha Esa, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberi doa restu di hari pernikahan kami.';
+  const penutup = m.teks_penutup || 'Terima kasih atas doa dan kehadiran Anda.';
+  const namaVal = esc(to || '');
+  const rsvpAktif = !CFG.SHEET_ID || !!CFG.FORM_URL;   // pratinjau atau Form sudah diisi
+
+  document.title = `Undangan Pernikahan ${pgPria} & ${pgWanita}`;
+  $('coverNames').innerHTML = `${esc(pgPria)} &amp; ${esc(pgWanita)}`;
+  $('guestName').textContent = to || 'Tamu Undangan';
+  if (m.musik) $('bgm').src = audioUrl(m.musik);
+
+  const galeri = galeriFoto.map((g, i) => `
+    <figure class="${i % 3 === 2 ? 'wide ' : ''}frame square" data-anim="${i % 2 ? 'zoom-out' : 'zoom-in'}" style="--d:${(i % 2) * .15}s">
+      ${photo(g.link, `Galeri ${i + 1}`, i % 2 ? 'in' : 'out')}
+    </figure>`).join('');
+
+  $('app').innerHTML = `
+  <section class="hero">
+    <div class="bg">${photo(foto(1), 'Foto sampul', 'out', false)}</div>
+    <p class="small" data-anim="fade-up">KAMI MENIKAH</p>
+    <h1 data-anim="zoom-out" style="--d:.15s">${esc(pgPria)} <span class="amp">&amp;</span> ${esc(pgWanita)}</h1>
+    <p data-anim="fade-up" style="--d:.3s">${esc(tanggalTampil)}</p>
+  </section>
+
+  <section>
+    <h2 data-anim="fade-up">Mempelai</h2>
+    <p data-anim="fade-up">${esc(pembuka)}</p>
+    <div style="margin-top:40px">
+      <div class="frame" data-anim="zoom-in">${photo(foto(2), pgPria, 'in')}</div>
+      <h3 class="names" data-anim="slide-left">${esc(namaPria)}</h3>
+      <p class="parents" data-anim="slide-left" style="--d:.1s">${esc(ortu(m.bapak_pria, m.ibu_pria, 'Putra'))}</p>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="frame" data-anim="zoom-in">${photo(foto(3), pgWanita, 'in')}</div>
+      <h3 class="names" data-anim="slide-right">${esc(namaWanita)}</h3>
+      <p class="parents" data-anim="slide-right" style="--d:.1s">${esc(ortu(m.bapak_wanita, m.ibu_wanita, 'Putri'))}</p>
+    </div>
+  </section>
+
+  ${showCountdown ? `
+  <section class="dark">
+    <h2 data-anim="fade-up">Menuju Hari Bahagia</h2>
+    <div class="countdown" data-anim="zoom-in">
+      <div><b id="cd-d">0</b><span>Hari</span></div>
+      <div><b id="cd-h">0</b><span>Jam</span></div>
+      <div><b id="cd-m">0</b><span>Menit</span></div>
+      <div><b id="cd-s">0</b><span>Detik</span></div>
+    </div>
+  </section>` : ''}
+
+  <section>
+    <h2 data-anim="fade-up">Acara</h2>
+    <div class="card" data-anim="zoom-in">
+      <h3>Hari &amp; Tanggal</h3>
+      <p>${esc(tanggalTampil)}${m.jam ? `<br>${esc(m.jam)}` : ''}</p>
+    </div>
+    <div data-anim="fade-up">
+      <p style="margin-top:22px">${m.lokasi ? `${esc(m.lokasi)}<br>` : ''}${esc(m.alamat)}</p>
+      ${/^https?:\/\//.test(m.link_alamat || '') ? `<a class="link" href="${esc(m.link_alamat)}" target="_blank" rel="noopener">Buka Google Maps</a>` : ''}
+    </div>
+  </section>
+
+  ${galeri ? `<section class="dark"><h2 data-anim="fade-up">Galeri</h2><div class="gallery">${galeri}</div></section>` : ''}
+
+  <section class="dark">
+    <h2 data-anim="fade-up">Konfirmasi Kehadiran</h2>
+    ${rsvpAktif ? `
+    <form id="rsvpForm" data-anim="fade-up">
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <input name="nama" placeholder="Nama Anda" value="${namaVal}" maxlength="80" required>
+      <input name="alamat" placeholder="Alamat" maxlength="150" required>
+      <select name="kehadiran" id="selHadir"><option>Hadir</option><option>Tidak hadir</option></select>
+      <button class="btn fill" type="submit">Kirim</button>
+      <div class="status" id="rsvpStatus" role="status"></div>
+    </form>
+    ` : '<p data-anim="fade-up">Konfirmasi kehadiran segera tersedia.</p>'}
+  </section>
+
+  <footer class="dark">
+    <p>${esc(penutup)}</p>
+    <p style="margin-top:8px">${esc(pgPria)} &amp; ${esc(pgWanita)}</p>
+  </footer>`;
+
+  bindForms();
+  if (showCountdown) startCountdown(tgl.date);
+  initAnimations();
+}
+
+/* ===================== FORMULIR ===================== */
+function bindForms() {
+  const rsvp = $('rsvpForm');
+  if (rsvp) rsvp.addEventListener('submit', e =>
+    submit(e, 'rsvp', $('rsvpStatus'), 'Terima kasih, konfirmasi Anda sudah kami terima.'));
+}
+
+async function submit(e, type, statusEl, okMsg, after) {
+  e.preventDefault();
+  const f = e.target, btn = f.querySelector('button[type=submit]');
+  const payload = { type };
+  new FormData(f).forEach((v, k) => payload[k] = v);
+  btn.disabled = true; statusEl.className = 'status'; statusEl.textContent = 'Mengirim…';
+  try {
+    const r = await api(payload);
+    if (!r.ok) throw new Error(r.error || 'Gagal menyimpan');
+    statusEl.textContent = okMsg;
+    if (after) after(f);
+    f.reset();
+  } catch (err) {
+    statusEl.className = 'status err';
+    statusEl.textContent = 'Belum terkirim. Periksa koneksi lalu coba lagi.';
+    console.error(err);
+  } finally { btn.disabled = false; }
+}
+
+/* ===================== HITUNG MUNDUR ===================== */
+let cdTimer;
+function startCountdown(target) {
+  clearInterval(cdTimer);
+  if (!target) return;
+  const tick = () => {
+    let s = Math.max(0, Math.floor((target - new Date()) / 1000));
+    const d = Math.floor(s / 86400); s %= 86400;
+    const h = Math.floor(s / 3600);  s %= 3600;
+    const mi = Math.floor(s / 60);   s %= 60;
+    $('cd-d').textContent = d; $('cd-h').textContent = h; $('cd-m').textContent = mi; $('cd-s').textContent = s;
+  };
+  tick(); cdTimer = setInterval(tick, 1000);
+}
+
+/* ===================== ANIMASI SCROLL & ZOOM FOTO ===================== */
+let scrubImgs = [], io, ticking = false;
+function initAnimations() {
+  if (io) io.disconnect();
+  io = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('show', e.isIntersecting)), { threshold: 0.2 });
+  document.querySelectorAll('[data-anim]').forEach(el => io.observe(el));
+  scrubImgs = [...document.querySelectorAll('img[data-scrub]')];
+  scrub();
+}
+function scrub() {
+  const vh = innerHeight;
+  scrubImgs.forEach(img => {
+    const r = img.parentElement.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > vh) return;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    const s = img.dataset.scrub === 'in' ? 1 + p * 0.25 : 1.25 - p * 0.25;
+    img.style.transform = `scale(${s.toFixed(3)})`;
+  });
+  ticking = false;
+}
+addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(scrub); } }, { passive: true });
+addEventListener('resize', scrub);
+
+/* ===================== BUKA / TUTUP & MUSIK ===================== */
+const cover = $('cover'), openBtn = $('openBtn'), closeBtn = $('closeBtn'), musicBtn = $('musicBtn'), bgm = $('bgm');
+
+openBtn.addEventListener('click', () => {
+  if (openBtn.dataset.reload) return location.reload();
+  cover.classList.add('open');
+  document.body.classList.remove('locked');
+  closeBtn.hidden = false;
+  if (bgm.getAttribute('src')) {
+    musicBtn.hidden = false;
+    bgm.play().then(() => musicBtn.classList.add('playing')).catch(() => {});
+  }
+  scrollTo(0, 0);
+  setTimeout(() => cover.classList.add('gone'), 1500);
+});
+closeBtn.addEventListener('click', () => {
+  scrollTo({ top: 0 });
+  cover.classList.remove('gone');
+  requestAnimationFrame(() => cover.classList.remove('open'));
+  document.body.classList.add('locked');
+  closeBtn.hidden = true;
+});
+musicBtn.addEventListener('click', () => {
+  if (bgm.paused) { bgm.play(); musicBtn.classList.add('playing'); }
+  else { bgm.pause(); musicBtn.classList.remove('playing'); }
+});
+
+/* ===================== MULAI: ambil data dari Google Sheet ===================== */
+async function boot() {
+  const to = (new URLSearchParams(location.search).get('to') || '').trim();
+  try {
+    let data = DEMO;
+    if (CFG.SHEET_ID) data = parseMain(tableToRows(await loadSheet(CFG.SHEET_ID)));
+    render(data, to);
+    openBtn.disabled = false;
+    openBtn.textContent = 'Buka Undangan';
+  } catch (err) {
+    console.error(err);
+    $('coverMsg').textContent = 'Undangan belum bisa dimuat. Periksa koneksi Anda.';
+    openBtn.dataset.reload = '1';
+    openBtn.disabled = false;
+    openBtn.textContent = 'Muat ulang';
+  }
+}
+boot();
+</script>
+</body>
+</html>
