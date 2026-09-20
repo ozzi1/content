@@ -102,6 +102,8 @@ select option{color:#000}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .status{min-height:1.4em;font-size:.88rem;text-align:center;margin-top:10px}
 .status.err{color:var(--dust)}
+.formbox{margin-top:20px;border-radius:14px;overflow:hidden;background:#fff}
+.formbox iframe{display:block;width:100%;height:940px;border:0}
 
 
 footer{padding:40px 24px 90px;text-align:center;font-size:.8rem;opacity:.85}
@@ -143,10 +145,13 @@ footer{padding:40px 24px 90px;text-align:center;font-size:.8rem;opacity:.85}
  *  SHEET_ID : ID Google Sheet "Main data" (bagian antara /d/ dan /edit pada linknya).
  *             Sheet harus dibagikan sebagai "Anyone with the link" -> Viewer.
  *             Jika dikosongkan, halaman memakai DATA CONTOH (mode pratinjau).
- *  FORM_URL + ENTRY : tujuan konfirmasi kehadiran (Google Form). Kosong = formulir disembunyikan.
+ *  FORM_EMBED : link Google Form berakhiran ?embedded=true, dipasang sebagai iframe.
+ *               Jika terisi, ini yang dipakai dan FORM_URL + ENTRY di bawah diabaikan.
+ *  FORM_URL + ENTRY : cara lain (formulir buatan sendiri, butuh kode entry.xxxx). Kosong = tidak dipakai.
  * ============================================================ */
 const CFG = {
   SHEET_ID: '1mlQuMGj7E0pxA05UiB6kdYu6JpViPhZTZVmtA_xDQ4E',
+  FORM_EMBED: 'https://docs.google.com/forms/d/e/1FAIpQLSe8KD3lZavdS15ANV28F3Gzf40vvwGsJDZEAcCzYHn97ZQzVw/viewform?embedded=true',
   FORM_URL: '',   // contoh: 'https://docs.google.com/forms/d/e/1FAIpQLS.../formResponse'
   ENTRY: { nama: '', alamat: '', kehadiran: '' }   // contoh: 'entry.123456789'
 };
@@ -311,6 +316,7 @@ function render(data, to) {
   const pembuka = m.teks_pembuka || 'Dengan memohon rahmat Tuhan Yang Maha Esa, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberi doa restu di hari pernikahan kami.';
   const penutup = m.teks_penutup || 'Terima kasih atas doa dan kehadiran Anda.';
   const namaVal = esc(to || '');
+  const formEmbed = /^https:\/\/docs\.google\.com\/forms\//.test(CFG.FORM_EMBED || '') ? CFG.FORM_EMBED : '';
   const rsvpAktif = !CFG.SHEET_ID || !!CFG.FORM_URL;   // pratinjau atau Form sudah diisi
 
   document.title = `Undangan Pernikahan ${pgPria} & ${pgWanita}`;
@@ -374,7 +380,7 @@ function render(data, to) {
 
   <section class="dark">
     <h2 data-anim="fade-up">Konfirmasi Kehadiran</h2>
-    ${rsvpAktif ? `
+    ${formEmbed ? `<div class="formbox" data-anim="fade-up"><iframe src="${esc(formEmbed)}" title="Formulir konfirmasi kehadiran" loading="lazy">Memuat…</iframe></div>` : rsvpAktif ? `
     <form id="rsvpForm" data-anim="fade-up">
       <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <input name="nama" placeholder="Nama Anda" value="${namaVal}" maxlength="80" required>
