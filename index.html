@@ -34,9 +34,10 @@ p{line-height:1.7;font-weight:300;font-size:.98rem}
 /* ===================== COVER ===================== */
 .cover{position:fixed;inset:0;z-index:100;display:flex;justify-content:center}
 .cover .inner{width:100%;max-width:430px;position:relative;height:100dvh;overflow:hidden}
-.door{position:absolute;top:0;bottom:0;width:50.5%;background:var(--teal);overflow:hidden;transition:transform 1.4s cubic-bezier(.77,0,.18,1);z-index:1}
-.door.l{left:0;border-right:1px solid var(--brass)}
-.door.r{right:0;border-left:1px solid var(--brass)}
+/* Pintu tanpa garis pinggir emas agar foto tidak terganggu */
+.door{position:absolute;top:0;bottom:0;width:50.5%;background:var(--teal);overflow:hidden;border:0;transition:transform 1.4s cubic-bezier(.77,0,.18,1);z-index:1}
+.door.l{left:0}
+.door.r{right:0}
 .door .art{position:absolute;top:0;height:100%;width:198%;max-width:none}
 .door.l .art{left:0}
 .door.r .art{right:0}
@@ -161,6 +162,8 @@ footer{padding:40px 24px 90px;text-align:center;font-size:.8rem;opacity:.85}
  *  SHEET_ID : ID Google Sheet "Main data" (bagian antara /d/ dan /edit pada linknya).
  *             Sheet harus dibagikan sebagai "Anyone with the link" -> Viewer.
  *             Jika dikosongkan, halaman memakai DATA CONTOH (mode pratinjau).
+ *  MUSIK    : lagu bawaan (file di repo, satu folder dengan index.html).
+ *             Jika baris "musik" di Sheet diisi, isi Sheet yang dipakai.
  *  FORM_EMBED : link Google Form berakhiran ?embedded=true, dipasang sebagai iframe.
  *               Jika terisi, ini yang dipakai dan FORM_URL + ENTRY di bawah diabaikan.
  *  FORM_URL + ENTRY : cara lain (formulir buatan sendiri, butuh kode entry.xxxx). Kosong = tidak dipakai.
@@ -171,6 +174,7 @@ footer{padding:40px 24px 90px;text-align:center;font-size:.8rem;opacity:.85}
  * ============================================================ */
 const CFG = {
   SHEET_ID: '1mlQuMGj7E0pxA05UiB6kdYu6JpViPhZTZVmtA_xDQ4E',
+  MUSIK: 'janji-suci.mp3',   // ganti nama file ini bila nama lagu di repo berbeda
   FORM_EMBED: 'https://docs.google.com/forms/d/e/1FAIpQLSe8KD3lZavdS15ANV28F3Gzf40vvwGsJDZEAcCzYHn97ZQzVw/viewform?embedded=true',
   FORM_URL: '',   // contoh: 'https://docs.google.com/forms/d/e/1FAIpQLS.../formResponse'
   ENTRY: { nama: '', alamat: '', kehadiran: '' }   // contoh: 'entry.123456789'
@@ -342,7 +346,9 @@ function render(data, to) {
   document.title = `Undangan Pernikahan ${pgPria} & ${pgWanita}`;
   $('coverNames').innerHTML = `${esc(pgPria)} &amp; ${esc(pgWanita)}`;
   $('guestName').textContent = to || 'Tamu Undangan';
-  if (m.musik) $('bgm').src = audioUrl(m.musik);
+  // Lagu: isi Sheet ("musik") diprioritaskan, bila kosong pakai lagu bawaan di repo
+  const lagu = m.musik ? audioUrl(m.musik) : CFG.MUSIK;
+  if (lagu) $('bgm').src = lagu;
 
   // Pintu sampul: foto dari Sheet ("pintu kiri" / "pintu kanan"); bila kosong, pakai motif kawung + gunungan
   const pintu = [m.pintu_kiri, m.pintu_kanan];
